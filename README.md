@@ -23,6 +23,7 @@ Caution:  You can only list and edit your DAG created by DAG Creation Manager.
 
 2. Download the code
     + ULR to Download From:
+    
         https://github.com/lattebank/airflow-dag-creation-manager-plugin/archive/master.zip
 
 3. Unzip the file and move the contents of the plugins folder into your Airflow plugins directory
