@@ -179,6 +179,8 @@ class DagCreationManager(BaseView):
     DEFAULT_CONF = {
         "retries": 3,
         "retry_delay_minutes": 5,
+        "start_date": "",
+        "end_date": "",
         "email_on_failure": True,
         "email_on_retry": False,
         "depends_on_past": False,

@@ -43,6 +43,16 @@
                         <input class="form-control" id="retry_delay_minutes" name="retry_delay_minutes" type="number" min="0" step="1" value="{{ conf.retry_delay_minutes }}" {% if readonly %}readonly="readonly"{% endif %}></div>
                 </div>
                 <div class="form-group">
+                    <label for="start_date" class="col-md-2 control-label long-label">Start Date <span class="glyphicon glyphicon-info-sign" aria-hidden="true" title='If this field is blank, it will be auto set.'></span> &nbsp;</label>
+                    <div class="col-md-10 form-field">
+                        <input class="form-control" data-date-format='YYYY-MM-DD HH:mm:ss' data-role="datetimepicker" id="start_date" name="start_date" value="{{ conf.start_date }}"  {% if readonly %}readonly="readonly"{% endif %}></div>
+                </div>
+                <div class="form-group">
+                    <label for="end_date" class="col-md-2 control-label long-label">End Date <span class="glyphicon glyphicon-info-sign" aria-hidden="true" title='if specified, the scheduler will not go beyond this date.'></span> &nbsp;</label>
+                    <div class="col-md-10 form-field">
+                        <input class="form-control" data-date-format='YYYY-MM-DD HH:mm:ss' data-role="datetimepicker" id="end_date" name="end_date" value="{{ conf.end_date }}"  {% if readonly %}readonly="readonly"{% endif %}></div>
+                </div>
+                <div class="form-group">
                     <label for="email_on_failure" class="col-md-2 control-label">Email On Failure &nbsp;</label>
                     <div class="col-md-10 form-field">
                         <input class="form-control" id="email_on_failure" name="email_on_failure" type="checkbox" data-toggle="toggle" data-size="mini" {% if conf.email_on_failure %}checked="checked"{% endif %} {% if readonly %}disabled="disabled"{% endif %}></div>

@@ -44,7 +44,8 @@ class DAGConverter(object):
         ("concurrency", lambda x: int(x) if x else 16, False), ("max_active_runs", lambda x: int(x) if x else 16, False),
         ("add_start_task", get_bool_code_false, False), ("add_end_task", get_bool_code_false, False),
         ("skip_dag_not_latest", get_bool_code_false, False), ("skip_dag_on_prev_running", get_bool_code_false, False),
-        ("email_on_skip_dag", get_bool_code_false, False), ("emails", get_string, False))
+        ("email_on_skip_dag", get_bool_code_false, False), ("emails", get_string, False), ("start_date", get_string, False),
+        ("end_date", get_string, False))
     TASK_ITEMS = (("task_name", get_string, True), ("task_type", get_string, True), ("command", get_string, False),
         ("priority_weight", get_int, False), ("upstreams", get_list, False), ("queue_pool", get_string, False),
         ("task_category", get_string, False), )
@@ -347,12 +348,21 @@ return not skip
             cron = conf["cron"]
             if cron == "None":
                 conf["start_date_code"] = now.strftime('datetime.strptime("%Y-%m-%d %H:%M:%S", "%%Y-%%m-%%d %%H:%%M:%%S")')
+                conf["end_date_code"] = "None"
                 conf["cron_code"] = "None"
             else:
                 cron_instance = croniter(cron, now)
                 start_date = cron_instance.get_prev(datetime)
                 conf["start_date_code"] = start_date.strftime('datetime.strptime("%Y-%m-%d %H:%M:%S", "%%Y-%%m-%%d %%H:%%M:%%S")')
+                conf["end_date_code"] = "None"
                 conf["cron_code"] = "'%s'" % cron
+            
+            if conf["start_date"]:
+                conf["start_date_code"] = 'datetime.strptime("%s", "%%Y-%%m-%%d %%H:%%M:%%S")' % conf["start_date"]
+
+            if conf["end_date"]:
+                conf["end_date_code"] = 'datetime.strptime("%s", "%%Y-%%m-%%d %%H:%%M:%%S")' % conf["end_date"]
+            
             dag_code = self.DAG_CODE_TEMPLATE % conf
 
             task_codes = []

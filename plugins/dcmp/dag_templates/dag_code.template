@@ -21,14 +21,19 @@ from airflow.utils.email import send_email
 TI = TaskInstance
 
 
-def send_alert_email(mark, context):
+def send_alert_email(mark, context, raise_exception=False):
     title = "[%%s] %%s@%%s: Airflow alert" %% (mark, context["dag"].dag_id, context["ti"].hostname)
     body = (
         "Log: <a href='{ti.log_url}'>Link</a><br>"
         "Host: {ti.hostname}<br>"
         "Log file: {ti.log_filepath}<br>"
     ).format(**{"ti": context["ti"]})
-    send_email(context["task"].email, title, body)
+    try:
+        send_email(context["task"].email, title, body)
+    except Exception as e:
+        logging.exception("send email failed")
+        if raise_exception:
+            raise e
 
 
 def get_default_params():
@@ -52,6 +57,7 @@ default_params = get_default_params()
 default_args = {
     'owner': '%(owner)s',
     'start_date': %(start_date_code)s,
+    'end_date': %(end_date_code)s,
     'email': %(email_code)s,
     'email_on_failure': %(email_on_failure)s,
     'email_on_retry': %(email_on_retry)s,
