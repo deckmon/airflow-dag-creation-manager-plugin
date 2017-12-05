@@ -18,12 +18,12 @@ Caution:  You can only list and edit your DAG created by DAG Creation Manager.
 
 1. Create the plugins folder if it doesn't exist. 
     + The location you should put it is usually at {AIRFLOW_HOME}/plugins. The specific location can be found in your airflow.cfg file:
-    
+
         plugins_folder = /home/{USER_NAME}/airflow/plugins
 
 2. Download the code
-    + ULR to Download From:
-    
+    + URL to Download From:
+
         https://github.com/lattebank/airflow-dag-creation-manager-plugin/archive/master.zip
 
 3. Unzip the file and move the contents of the plugins folder into your Airflow plugins directory
@@ -62,8 +62,8 @@ Caution:  You can only list and edit your DAG created by DAG Creation Manager.
 
 5. (Optional) Use dag creation manager password auth
     + Note: This is not required, You can use your own auth backends
-    a. Under the [webserver] section, change the following configs:
-    
+      a. Under the [webserver] section, change the following configs:
+
             authenticate = True
 
             auth_backend = dcmp.auth.backends.password_auth
