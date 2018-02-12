@@ -22,7 +22,7 @@ Caution:  You can only list and edit your DAG created by DAG Creation Manager.
         plugins_folder = /home/{USER_NAME}/airflow/plugins
 
 2. Download the code
-    + URL to Download From:
+    + ULR to Download From:
 
         https://github.com/lattebank/airflow-dag-creation-manager-plugin/archive/master.zip
 
