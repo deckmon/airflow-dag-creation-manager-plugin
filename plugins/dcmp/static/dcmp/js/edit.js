@@ -15,7 +15,7 @@ Date.prototype.Format = function (fmt) { //author: meizz
 };
 
 (function($) {
-    var render_help = '<p class="help-block">Can include <a target="_blank" href="params">{{ params }}</a>, <a target="_blank" href="http://pythonhosted.org/airflow/code.html#id2">{{ macros }}</a> and <a target="_blank" href="http://pythonhosted.org/airflow/code.html#default-variables">default variables</a>.</p>';
+    var render_help = '<p class="help-block">Can include <a target="_blank" href="params">{{ params }}</a>, <a target="_blank" href="http://airflow.apache.org/code.html#id2">{{ macros }}</a> and <a target="_blank" href="http://airflow.apache.org/code.html#default-variables">default variables</a>.</p>';
 
     window.default_task = {
         task_name: "",
