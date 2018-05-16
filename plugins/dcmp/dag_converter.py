@@ -169,7 +169,7 @@ _["%(task_name)s"] << _["%(upstream_name)s"]
             task_res[key] = value
         for key, trans_func, _ in self.TASK_EXTRA_ITEMS:
             value = task_dict.get(key)
-            if value:
+            if value is not None and value != "":
                 value = trans_func(value)
                 task_res[key] = value
         return task_res
