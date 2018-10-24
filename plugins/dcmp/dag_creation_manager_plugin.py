@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 __author__ = "yanghanbing"
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 
 import logging
 import json
@@ -96,7 +96,7 @@ def command_render(task_type, command):
         'sql': lambda x: render(x, lexers.SqlLexer),
         'python': lambda x: render(x, lexers.PythonLexer),
         'short_circuit': lambda x: render(x, lexers.PythonLexer),
-        'hive_sensor': lambda x: render(x, lexers.PythonLexer),
+        'partition_sensor': lambda x: render(x, lexers.PythonLexer),
         'time_sensor': lambda x: render(x, lexers.PythonLexer),
         'timedelta_sensor': lambda x: render(x, lexers.PythonLexer),
     }

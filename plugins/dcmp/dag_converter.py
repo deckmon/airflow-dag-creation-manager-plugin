@@ -114,18 +114,18 @@ def %(task_name)s_worker(ds, **context):
     python_callable=%(task_name)s_worker,
 """, }
 
+    HIVE_PARTITION_SENSOR_TASK_CODE_TEMPLATE = BASE_TASK_CODE_TEMPLATE % {
+        "before_code": "",
+        "operator_name": "NamedHivePartitionSensor",
+        "operator_code": r"""
+    partition_names=[line.strip() for line in r'''%(processed_command)s'''.decode("utf-8").strip().split("\n") if line.strip()],
+""", }
+
     TIME_SENSOR_TASK_CODE_TEMPLATE = BASE_TASK_CODE_TEMPLATE % {
         "before_code": "",
         "operator_name": "TimeSensor",
         "operator_code": r"""
-        target_time=%(processed_command)s,
-""", }
-
-    HIVE_SENSOR_TASK_CODE_TEMPLATE = BASE_TASK_CODE_TEMPLATE % {
-        "before_code": "",
-        "operator_name": "NamedHivePartitionSensor",
-        "operator_code": r"""
-    partition_names=%(processed_command)s,
+    target_time=%(processed_command)s,
 """, }
 
     TIMEDELTA_SENSOR_TASK_CODE_TEMPLATE = BASE_TASK_CODE_TEMPLATE % {
@@ -145,7 +145,7 @@ _["%(task_name)s"] << _["%(upstream_name)s"]
         "hql": HQL_TASK_CODE_TEMPLATE,
         "python": PYTHON_TASK_CODE_TEMPLATE,
         "short_circuit": SHORT_CIRCUIT_TASK_CODE_TEMPLATE,
-        "hive_sensor":  HIVE_SENSOR_TASK_CODE_TEMPLATE,
+        "partition_sensor":  HIVE_PARTITION_SENSOR_TASK_CODE_TEMPLATE,
         "time_sensor": TIME_SENSOR_TASK_CODE_TEMPLATE,
         "timedelta_sensor": TIMEDELTA_SENSOR_TASK_CODE_TEMPLATE,
     }
