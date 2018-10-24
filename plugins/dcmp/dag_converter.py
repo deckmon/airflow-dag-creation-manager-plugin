@@ -7,6 +7,7 @@ import os
 import json
 from copy import deepcopy
 from datetime import datetime
+from tempfile import mkdtemp
 from collections import OrderedDict
 
 from croniter import croniter
@@ -19,10 +20,6 @@ from dcmp.models import DcmpDag
 from dcmp.utils import create_dagbag_by_dag_code
 
 
-BASE_DIR = os.path.dirname(os.path.realpath(__file__))
-DAG_TEMPLATES_DIR = os.path.join(BASE_DIR, "dag_templates")
-
-
 get_list = lambda x: x if x else []
 get_string = lambda x: x.strip() if x else ""
 get_int = lambda x: int(x) if x else 0
@@ -32,7 +29,7 @@ get_bool_code_false = lambda x: False if x is not True else True
 
 def load_dag_template(template_name):
     logging.info("loading dag template: %s" % template_name)
-    with open(os.path.join(DAG_TEMPLATES_DIR, template_name + ".template"), "r") as f:
+    with open(os.path.join(dcmp_settings.DAG_CREATION_MANAGER_DAG_TEMPLATES_DIR, template_name + ".template"), "r") as f:
         res = f.read()
     return res
 
@@ -117,18 +114,18 @@ def %(task_name)s_worker(ds, **context):
     python_callable=%(task_name)s_worker,
 """, }
 
+    HIVE_PARTITION_SENSOR_TASK_CODE_TEMPLATE = BASE_TASK_CODE_TEMPLATE % {
+        "before_code": "",
+        "operator_name": "NamedHivePartitionSensor",
+        "operator_code": r"""
+    partition_names=[line.strip() for line in r'''%(processed_command)s'''.decode("utf-8").strip().split("\n") if line.strip()],
+""", }
+
     TIME_SENSOR_TASK_CODE_TEMPLATE = BASE_TASK_CODE_TEMPLATE % {
         "before_code": "",
         "operator_name": "TimeSensor",
         "operator_code": r"""
-        target_time=%(processed_command)s,
-""", }
-
-    HIVE_SENSOR_TASK_CODE_TEMPLATE = BASE_TASK_CODE_TEMPLATE % {
-        "before_code": "",
-        "operator_name": "NamedHivePartitionSensor",
-        "operator_code": r"""
-    partition_names=%(processed_command)s,
+    target_time=%(processed_command)s,
 """, }
 
     TIMEDELTA_SENSOR_TASK_CODE_TEMPLATE = BASE_TASK_CODE_TEMPLATE % {
@@ -148,7 +145,7 @@ _["%(task_name)s"] << _["%(upstream_name)s"]
         "hql": HQL_TASK_CODE_TEMPLATE,
         "python": PYTHON_TASK_CODE_TEMPLATE,
         "short_circuit": SHORT_CIRCUIT_TASK_CODE_TEMPLATE,
-        "hive_sensor":  HIVE_SENSOR_TASK_CODE_TEMPLATE,
+        "partition_sensor":  HIVE_PARTITION_SENSOR_TASK_CODE_TEMPLATE,
         "time_sensor": TIME_SENSOR_TASK_CODE_TEMPLATE,
         "timedelta_sensor": TIMEDELTA_SENSOR_TASK_CODE_TEMPLATE,
     }
@@ -434,11 +431,15 @@ return not skip
         
         dag_codes = self.render_confs(confs)
         
-        shutil.rmtree(dcmp_settings.DAG_CREATION_MANAGER_DEPLOYED_DAGS_FOLDER, ignore_errors=True)
-        os.makedirs(dcmp_settings.DAG_CREATION_MANAGER_DEPLOYED_DAGS_FOLDER)
+        tmp_dir = mkdtemp(prefix="dcmp_deployed_dags_")
+        os.chmod(tmp_dir, 0o755)
         for dag_name, dag_code in dag_codes:
-            with open(os.path.join(dcmp_settings.DAG_CREATION_MANAGER_DEPLOYED_DAGS_FOLDER, dag_name + ".py"), "w") as f:
+            with open(os.path.join(tmp_dir, dag_name + ".py"), "w") as f:
                 f.write(dag_code.encode("utf-8"))
+        
+        shutil.rmtree(dcmp_settings.DAG_CREATION_MANAGER_DEPLOYED_DAGS_FOLDER, ignore_errors=True)
+        shutil.copytree(tmp_dir, dcmp_settings.DAG_CREATION_MANAGER_DEPLOYED_DAGS_FOLDER)
+        shutil.rmtree(tmp_dir, ignore_errors=True)
     
     def create_dagbag_by_conf(self, conf):
         _, dag_code = self.render_confs({conf["dag_name"]: conf})[0]

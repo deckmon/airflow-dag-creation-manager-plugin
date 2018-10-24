@@ -6,7 +6,7 @@ import socket
 from airflow import configuration
 
 
-TASK_TYPES = ["bash", "hql", "python", "short_circuit", "hive_sensor", "time_sensor", "timedelta_sensor"]
+TASK_TYPES = ["bash", "hql", "python", "short_circuit", "partition_sensor", "time_sensor", "timedelta_sensor"]
 
 AUTHENTICATE = configuration.getboolean('webserver', 'AUTHENTICATE')
 BASE_URL = configuration.get('webserver', 'BASE_URL')
@@ -59,3 +59,8 @@ try:
     DAG_CREATION_MANAGER_CAN_APPROVE_SELF = configuration.getboolean('dag_creation_manager', 'DAG_CREATION_MANAGER_CAN_APPROVE_SELF')
 except Exception as e:
     DAG_CREATION_MANAGER_CAN_APPROVE_SELF = True
+
+try:
+    DAG_CREATION_MANAGER_DAG_TEMPLATES_DIR = configuration.get('dag_creation_manager', 'DAG_CREATION_MANAGER_DAG_TEMPLATES_DIR')
+except Exception as e:
+    DAG_CREATION_MANAGER_DAG_TEMPLATES_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "dag_templates")
