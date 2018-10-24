@@ -59,3 +59,8 @@ try:
     DAG_CREATION_MANAGER_CAN_APPROVE_SELF = configuration.getboolean('dag_creation_manager', 'DAG_CREATION_MANAGER_CAN_APPROVE_SELF')
 except Exception as e:
     DAG_CREATION_MANAGER_CAN_APPROVE_SELF = True
+
+try:
+    DAG_CREATION_MANAGER_DAG_TEMPLATES_DIR = configuration.get('dag_creation_manager', 'DAG_CREATION_MANAGER_DAG_TEMPLATES_DIR')
+except Exception as e:
+    DAG_CREATION_MANAGER_DAG_TEMPLATES_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "dag_templates")
