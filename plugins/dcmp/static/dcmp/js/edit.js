@@ -130,7 +130,11 @@ Date.prototype.Format = function (fmt) { //author: meizz
                 }else if(["python", "short_circuit"].indexOf(task_type) != -1){
                     field_html.push('<textarea ' + (readonly? ' readonly="readonly" ': '') + ' id="ace_' + task_id + '_' + task_type + '" class="form-control" rows="1" name="command">' + (task_type == task[field_name]? task["command"]: '') + '</textarea>');
                     field_html.push(get_ace_script(task_type, "python"));
-                }else if(task_type == "timedelta_sensor"){
+                }else if(task_type == "hive_sensor"){
+                    field_html.push('<textarea ' + (readonly? ' readonly="readonly" ': '') + ' id="ace_' + task_id + '_' + task_type + '" class="form-control" rows="1" name="command">' + (task_type == task[field_name]? task["command"]: '') + '</textarea>');
+                    field_html.push(get_ace_script(task_type, "sql", 1));
+                }
+                else if(task_type == "timedelta_sensor"){
                     field_html.push('<textarea ' + (readonly? ' readonly="readonly" ': '') + ' id="ace_' + task_id + '_' + task_type + '" class="form-control" rows="1" name="command">' + (task_type == task[field_name]? task["command"]: '') + '</textarea>');
                     field_html.push(get_ace_script(task_type, "python", 1));
                 }else{
