@@ -5,6 +5,7 @@ import shutil
 import re
 import os
 import json
+from time import sleep
 from copy import deepcopy
 from datetime import datetime
 from tempfile import mkdtemp
@@ -437,9 +438,20 @@ return not skip
             with open(os.path.join(tmp_dir, dag_name + ".py"), "w") as f:
                 f.write(dag_code.encode("utf-8"))
         
-        shutil.rmtree(dcmp_settings.DAG_CREATION_MANAGER_DEPLOYED_DAGS_FOLDER, ignore_errors=True)
-        shutil.copytree(tmp_dir, dcmp_settings.DAG_CREATION_MANAGER_DEPLOYED_DAGS_FOLDER)
-        shutil.rmtree(tmp_dir, ignore_errors=True)
+        err = None
+        for _ in xrange(3):
+            shutil.rmtree(dcmp_settings.DAG_CREATION_MANAGER_DEPLOYED_DAGS_FOLDER, ignore_errors=True)
+            try:
+                shutil.copytree(tmp_dir, dcmp_settings.DAG_CREATION_MANAGER_DEPLOYED_DAGS_FOLDER)
+            except Exception as e:
+                err = e
+                sleep(1)
+            else:
+                shutil.rmtree(tmp_dir, ignore_errors=True)
+                break
+        else:
+            shutil.rmtree(tmp_dir, ignore_errors=True)
+            raise err
     
     def create_dagbag_by_conf(self, conf):
         _, dag_code = self.render_confs({conf["dag_name"]: conf})[0]
