@@ -647,7 +647,11 @@ Date.prototype.Format = function (fmt) { //author: meizz
             while(drafts.length > DRAFT_LENGTH){
                 drafts.pop();
             };
-            localStorage.setItem(draft_storage_key, JSON.stringify(drafts));
+            try{
+                localStorage.setItem(draft_storage_key, JSON.stringify(drafts));
+            }catch(e){
+                console.log("save draft failed", e)
+            };
         };
     };
 

@@ -289,6 +289,7 @@
         };
         if(!readonly){
             var tasks = conf_to_change.tasks || [];
+            if (window.element_to_json == null) return;
             var new_conf = element_to_json($("#dag-container"));
             for (var prop in conf_to_change) {
                 if (conf_to_change.hasOwnProperty(prop)) {
@@ -322,6 +323,7 @@
             var task = conf_to_change.tasks[+cur_task_index];
             if(task){
                 var upstreams = task.upstreams;
+                if (window.element_to_json == null) return;
                 conf_to_change.tasks[+cur_task_index] = element_to_json($(".task-item"));
                 conf_to_change.tasks[+cur_task_index]["upstreams"] = upstreams;
             }
