@@ -16,9 +16,13 @@
             if (!_wasPageCleanedUp)
             {
                 if(window.save_draft) window.save_draft();
-                var xmlhttp = new XMLHttpRequest();
-                xmlhttp.open("GET", "api?api=end_editing&dag_name={{ conf.dag_name }}", false);
-                xmlhttp.send();
+                if(window.navigator && window.navigator.sendBeacon) {
+                    navigator.sendBeacon("api?api=end_editing&dag_name={{ conf.dag_name }}");
+                } else {
+                    var xmlhttp = new XMLHttpRequest();
+                    xmlhttp.open("GET", "api?api=end_editing&dag_name={{ conf.dag_name }}", false);
+                    xmlhttp.send();
+                }
                 _wasPageCleanedUp = true;
             }
         }
