@@ -14,9 +14,13 @@ from airflow.operators.bash_operator import BashOperator
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.hive_operator import HiveOperator
 from airflow.operators.python_operator import PythonOperator, ShortCircuitOperator
-from airflow.operators.sensors import TimeSensor, TimeDeltaSensor, NamedHivePartitionSensor
+from airflow.operators.sensors import TimeSensor, TimeDeltaSensor
 from airflow.utils.email import send_email
 
+try:
+    from airflow.operators.sensors import NamedHivePartitionSensor
+except ImportError as e:
+    from airflow.sensors import NamedHivePartitionSensor # Airflow 1.10
 
 TI = TaskInstance
 
